@@ -1,0 +1,19 @@
+#spring.application.name=backend
+server:
+  port: 4000
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/board?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&CharacterEncoding=UTF-8
+    username: developer
+    password: P!ssw0rd
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 110MB
