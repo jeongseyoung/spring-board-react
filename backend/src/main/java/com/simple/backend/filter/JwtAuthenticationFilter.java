@@ -18,31 +18,30 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
-// @RequiredArgsConstructor
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
-    }
+    private final JwtProvider jwtProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            System.out.println("jwtProvider.toString(): " + jwtProvider.toString());
             String token = parseBearerToken(request);
-            if (token == null) {
+            String email = jwtProvider.validtae(token);
+            if (token == null || email == null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            String email = jwtProvider.validtae(token);
-            if (email == null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+            // if (email == null) {
+            // filterChain.doFilter(request, response);
+            // return;
+            // }
 
             AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null,
                     AuthorityUtils.NO_AUTHORITIES);

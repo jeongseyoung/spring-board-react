@@ -12,8 +12,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/board?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&CharacterEncoding=UTF-8
     username: developer
-    password: P!ssw0rd
+    password: p!ssw0rd
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 110MB
+
+secretkey: "sdf90s8df7s09fDb232DaIlZLAdnSDLixndjfs0d9fjs09gjs09f"
