@@ -1,6 +1,7 @@
 import React from "react";
 import { FavoriteListItem } from "types/interface";
 import defaultImage from "assets/image/bus.jpg";
+import "./style.css";
 interface Props {
   favoriteItem: FavoriteListItem;
 }
