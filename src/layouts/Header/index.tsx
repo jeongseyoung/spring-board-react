@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import "./style.css";
 import { useNavigate, useParams } from "react-router-dom";
+import { MAIN_PATH, SEARCH_PATH } from "constant";
 export default function Header() {
   // navigate함수;
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function Header() {
     const [word, setWord] = useState<string | number>("");
     // state 검색어 경로 variable 상태
     const { searchWord } = useParams();
+
     // event handler - 검색어 변경 이벤트
     const onSearchWordHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
