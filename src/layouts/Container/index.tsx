@@ -18,4 +18,4 @@ export default function Container() {
     </>
   );
 }
-// {pathname !== "/auth" && <Footer />} -> pathname이 auth가 아니면 <Footer /> 출력
+// {pathname !== AUTH_PATH() && <Footer />} -> pathname이 auth가 아니면 <Footer /> 출력

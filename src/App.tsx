@@ -22,13 +22,16 @@ import BoardWrite from "views/Board/Write";
 import BoardUpdate from "views/Board/Update";
 import BoardDetail from "views/Board/Detail";
 import Container from "layouts/Container";
-import { BOARD_UPDATE_PATH, MAIN_PATH } from "constant";
-import { AUTH_PATH } from "constant";
-import { SEARCH_PATH } from "constant";
-import { USER_PATH } from "constant";
-import { BOARD_PATH } from "constant";
-import { BOARD_WRITE_PATH } from "constant";
-import { BOARD_DETAIL_PATH } from "constant";
+import {
+  BOARD_UPDATE_PATH,
+  MAIN_PATH,
+  AUTH_PATH,
+  SEARCH_PATH,
+  USER_PATH,
+  BOARD_PATH,
+  BOARD_WRITE_PATH,
+  BOARD_DETAIL_PATH,
+} from "constant";
 
 // Application component
 function App() {
@@ -101,7 +104,7 @@ function App() {
               element={<BoardUpdate />}
             ></Route>
           </Route>
-          <Route path="*" element={<h1>404 Not Found</h1>}></Route>
+          <Route path="*" element={<h1>잘못된 페이지</h1>}></Route>
         </Route>
       </Routes>
     </>
