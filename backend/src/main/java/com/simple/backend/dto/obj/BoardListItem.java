@@ -16,5 +16,5 @@ public class BoardListItem {
     private int viewCnt;
     private String writeDatetim;
     private String writerNickname;
-    private String writerProfileImage;
+    private String writerProfileImage; 
 }

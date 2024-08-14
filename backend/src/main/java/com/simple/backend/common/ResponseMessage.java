@@ -11,7 +11,7 @@ public interface ResponseMessage {
     String DUPLICATED_TEL_NUMBER = "Duplicated tel number";
     String NOT_FOUND_USER = "User not found";
     String NOT_FOUND_POST = "Post not found";
-
+  
     // 401
     String LOGIN_FAILED = "Login failed";
     String AUTHORIZATION_FAILED = "Authorization failed";
