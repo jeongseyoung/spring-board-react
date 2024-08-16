@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity(name = "board_list_view")
 @Table(name = "board_list_view")
-public class BoardListView {
+public class BoardListViewEntity {
     @Id
     private int boardNumber;
     private String title;

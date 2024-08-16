@@ -14,7 +14,7 @@ import lombok.Getter;
 public class ResponseDto {
 
     private String code;
-    private String message; 
+    private String message;
 
     public static ResponseEntity<ResponseDto> databaseError() {
         ResponseDto responseDto = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
