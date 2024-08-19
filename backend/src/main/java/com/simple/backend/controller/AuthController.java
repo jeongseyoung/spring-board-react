@@ -32,6 +32,7 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity<? super SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto requestBody) {
         ResponseEntity<? super SignInResponseDto> res = authService.SignIn(requestBody);
+        System.out.println("res : " + res.toString());
         return res;
     }
 

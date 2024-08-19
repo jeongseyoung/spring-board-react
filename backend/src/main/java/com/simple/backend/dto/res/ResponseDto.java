@@ -17,7 +17,12 @@ public class ResponseDto {
     private String message;
 
     public static ResponseEntity<ResponseDto> databaseError() {
-        ResponseDto responseDto = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR));
+    }
+
+    public static ResponseEntity<ResponseDto> validationFailed() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDto(ResponseCode.VALIDATION_FAILED, ResponseMessage.VALIDATION_FAILED));
     }
 }

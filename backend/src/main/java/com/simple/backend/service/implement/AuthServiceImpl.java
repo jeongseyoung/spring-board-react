@@ -36,29 +36,33 @@ public class AuthServiceImpl implements AuthService {
                 return SignUpResponseDto.Depulicated_EMAIL();
 
             if (userRepository.existsByNickname(dto.getNickname()))
-                return SignUpResponseDto.Depulicated_EMAIL();
+                return SignUpResponseDto.Depulicated_NICKNAME();
 
             if (userRepository.existsByTelNumber(dto.getTelNumber()))
-                return SignUpResponseDto.Depulicated_EMAIL();
+                return SignUpResponseDto.Depulicated_TELNUMBER();
 
             String encodedPassword = passwordEncoder.encode(dto.getPassword());
             dto.setPassword(encodedPassword);
-            System.out.println("dto service : " + dto.getAddress() + dto.isAgreedPersonal());
+
             userRepository.save(new UserEntity(dto));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseDto.databaseError();
         }
         return SignUpResponseDto.success();
     }
 
+    // 로그인
     @Override
     public ResponseEntity<? super SignInResponseDto> SignIn(SignInRequestDto dto) {
         String token;
         try {
+            // if (!userRepository.existsByEmail(dto.getEmail()))
+            // return SignInResponseDto.loginFailed();
             UserEntity userEntity = userRepository.findByEmail(dto.getEmail());
 
-            if (userEntity.getEmail() == null || !passwordEncoder.matches(dto.getPassword(), userEntity.getPassword()))
+            if (userEntity == null || !passwordEncoder.matches(dto.getPassword(), userEntity.getPassword()))
                 return SignInResponseDto.loginFailed();
 
             token = jwtProvider.create(dto.getEmail());
