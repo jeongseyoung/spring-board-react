@@ -14,23 +14,17 @@ interface Props {
   value: string;
   error: boolean;
   message?: string;
-  icon?: string; //있어도 되고 없어도 되고
+  icon?: "eye-light-off-icon" | "eye-light-on-icon" | "expand-right-light-icon"; // ? -> 있어도 되고 없어도 되고?????
 
   onButtonClick?: () => void;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const InputBox = forwardRef<HTMLInputElement, Props>(
   (props: Props, ref) => {
     const { label, type, error, placeholder, value, icon, message } = props;
-    const { setValue, onButtonClick, onKeyDown } = props;
-
-    //event handler: input값 변경 이벤트 처리 함수
-    const onChangeHanlder = (event: ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      setValue(value);
-    };
+    const { onChange, onButtonClick, onKeyDown } = props;
 
     //event handler: input키 이벤트 처리 함수
     const onKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -45,16 +39,16 @@ export const InputBox = forwardRef<HTMLInputElement, Props>(
           className={error ? "inputbox-container-error" : "inputbox-cotainer"}
         >
           <input
-            ref={ref} // 엔터치면 다음 칸으로 이동!
-            type={type}
+            ref={ref} // 엔터치면 다음 칸으로 이동!  ???
             className="input"
+            type={type}
             placeholder={placeholder}
             value={value}
-            onChange={onChangeHanlder}
+            onChange={onChange}
             onKeyDown={onKeyDownHandler}
           />
           {onButtonClick !== undefined && (
-            <div className="icon-button">
+            <div className="icon-button" onClick={onButtonClick}>
               {icon !== undefined && <div className={`icon ${icon}`}></div>}
             </div>
           )}

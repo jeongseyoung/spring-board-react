@@ -1,6 +1,7 @@
 enum ResponseCode {
   // 200
   SUCCESS = "SU",
+  SIGN_IN_FALIED = "SF",
   // 400
   VALIDATION_FAILED = "VF",
   DUPLICATED_EMAIL = "DE",
