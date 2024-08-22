@@ -1,13 +1,20 @@
-import React, { useState, KeyboardEvent, useRef, ChangeEvent } from "react";
+import React, {
+  useState,
+  KeyboardEvent,
+  useRef,
+  ChangeEvent,
+  useEffect,
+} from "react";
 import "./style.css";
 import { InputBox } from "components/InputBox";
-import { SignInRequestDto } from "api/req/auth";
-import { signInRequest } from "api";
-import { SignInResponseDto } from "api/res/auth";
+import { SignInRequestDto, SignUpRequestDto } from "api/req/auth";
+import { signInRequest, signUpRequest } from "api";
+import { SignInResponseDto, SignUpResponseDto } from "api/res/auth";
 import { ResponseDto } from "api/res";
 import { useCookies } from "react-cookie";
 import { MAIN_PATH } from "constant";
 import { useNavigate } from "react-router-dom";
+import { Address, useDaumPostcodePopup } from "react-daum-postcode";
 
 // component: 인증 화면 컴포넌트
 export default function Authentication() {
@@ -74,7 +81,7 @@ export default function Authentication() {
     // event handler : 로그인, 패스워드 버튼 클릭 이벤트 처리
     const onSignInButtonHandler = () => {
       const requestBody: SignInRequestDto = { email, password };
-      signInRequest(requestBody); //.then(signInRequest);
+      signInRequest(requestBody).then(signInResponse);
     };
     const onPasswordButtonClickHandler = () => {
       if (passwordType === "text") {
@@ -177,7 +184,7 @@ export default function Authentication() {
     // state : 페이지 번호 상태
     const [page, setPage] = useState<1 | 2>(1);
 
-    // state : 이메일, 패스워드, 패스워드, 패스워드체크, 닉네임, 핸드폰번호, 주소, 상세주소 타입 상태 상태
+    // state : 이메일, 패스워드, 패스워드, 패스워드체크, 닉네임, 핸드폰번호, 주소, 상세주소, 개인정보동의 타입 상태 상태
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [passwordCheck, setPasswordCheck] = useState<string>("");
@@ -185,15 +192,13 @@ export default function Authentication() {
     const [telNumber, setTelNumber] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [addressDetail, setAddressDetail] = useState<string>("");
-
     const [passwordType, setPasswordType] = useState<"text" | "password">(
       "password"
     );
     const [passwordCheckType, setPasswordCheckType] = useState<
       "text" | "password"
     >("password");
-
-    // state : 닉네임, 핸드폰번호, 주소, 상세주소 상태 state
+    const [agreedPersonal, setAgreedPersonal] = useState<boolean>(false);
 
     // state : 에러체크
     const [isEmailError, setEmailError] = useState<boolean>(false);
@@ -203,6 +208,8 @@ export default function Authentication() {
     const [isNicknameError, setNicknameError] = useState<boolean>(false);
     const [isTelNumberError, setTelNumberError] = useState<boolean>(false);
     const [isAddressError, setAddressError] = useState<boolean>(false);
+    const [isAgreedPersonalError, setAgreedPersonalError] =
+      useState<boolean>(false);
 
     // state : 에러 메세지
     const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
@@ -216,38 +223,88 @@ export default function Authentication() {
       useState<string>("");
     const [addressErrorMessage, setAddressErrorMessage] = useState<string>("");
 
+    // function : 다음(daum) 주소 검색 팝업 오픈 함수
+    const open = useDaumPostcodePopup(); // 주소 검색 팝업창 오픈!
+
+    // function : sign up response 처리 함수
+    const signUpResponse = (
+      responseBody: SignUpResponseDto | ResponseDto | null
+    ) => {
+      if (!responseBody) {
+        alert("네트워크 이상");
+        return;
+      }
+      const { code } = responseBody;
+      if (code === "DE") {
+        setEmailError(true);
+        setEmailErrorMessage("이메일 중복");
+      }
+      if (code === "DN") {
+        setNicknameError(true);
+        setNicknameErrorMessage("닉네임 중복");
+      }
+      if (code === "DT") {
+        setTelNumberError(true);
+        setTelNumberErrorMessage("중복된 휴대폰 번호");
+      }
+      if (code === "VF") alert("모든 값을 입력하세요");
+      if (code === "DBE") alert("DB 오류");
+
+      if (code !== "SU") return;
+
+      setView("sign-in");
+    };
+
     // event handler : 이메일, 패스워드, 패스워드체크, 닉네임, 핸드폰번호, 주소, 상세주소 변경 change 이벤트 처리
     const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setEmail(value);
+      setEmailError(false);
+      setEmailErrorMessage("");
     };
     const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setPassword(value);
+      setPasswordError(false);
+      setPasswordCheckErrorMessage("");
     };
     const onPasswordCheckChangeHandler = (
       event: ChangeEvent<HTMLInputElement>
     ) => {
       const { value } = event.target;
       setPasswordCheck(value);
+      setPasswordCheckError(false);
+      setPasswordCheckErrorMessage("");
     };
     const onNicknameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setNickname(value);
+      setNicknameError(false);
+      setNicknameErrorMessage("");
     };
     const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setTelNumber(value);
+      setTelNumberError(false);
+      setTelNumberErrorMessage("");
     };
     const onAddressChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setAddress(value);
+      setAddressError(false);
+      setAddressErrorMessage("");
     };
     const onAddressDetailChangeHandler = (
       event: ChangeEvent<HTMLInputElement>
     ) => {
       const { value } = event.target;
       setAddressDetail(value);
+    };
+
+    // event handler : 개인정보 동의 체크박스 클릭 이벤트 처리
+    const onAgreedPersonalClickHandler = () => {
+      setAgreedPersonal(!agreedPersonal);
+      setAgreedPersonalError(false);
     };
 
     // event handler : 키 다운 이벤트
@@ -267,7 +324,6 @@ export default function Authentication() {
       event: KeyboardEvent<HTMLInputElement>
     ) => {
       if (event.key !== "Enter") return;
-      if (!passwordRef.current) return;
       onNextButtonButtonClickHandler();
     };
     const onNicknameKeyDownHandler = (
@@ -282,8 +338,9 @@ export default function Authentication() {
       event: KeyboardEvent<HTMLInputElement>
     ) => {
       if (event.key !== "Enter") return;
-      if (!addressRef.current) return;
-      addressRef.current.focus();
+      // if (!addressRef.current) return;
+      // addressRef.current.focus();
+      onAddressButtonClickHandler();
     };
     const onAddressKeyDownHandler = (
       event: KeyboardEvent<HTMLInputElement>
@@ -296,11 +353,13 @@ export default function Authentication() {
       event: KeyboardEvent<HTMLInputElement>
     ) => {
       if (event.key !== "Enter") return;
-      if (!passwordRef.current) return;
+      // if (!passwordRef.current) return;
       onSignUpButtonClickHandler(); // 이건 내가적은거
     };
     // event handler : 주소 버튼 클릭 이벤트 처리
-    const onAddressButtonClickHandler = () => {};
+    const onAddressButtonClickHandler = () => {
+      open({ onComplete });
+    };
 
     // event handler : 다음 단계 버튼 클릭 이벤트 처리 (다음페이지)
     const onNextButtonButtonClickHandler = () => {
@@ -329,12 +388,81 @@ export default function Authentication() {
       setPage(1);
     };
     // event handler : 회원가입 버튼 클릭 이벤트 처리
-    const onSignUpButtonClickHandler = () => {};
+    const onSignUpButtonClickHandler = () => {
+      const emailPattern = /^[a-zA-Z0-9]*@[-.]?[a-zA-Z0-9]*\.[a-zA-Z]{2,4}$/;
+      const isEmailPatter = emailPattern.test(email);
+      if (!isEmailPatter) {
+        setEmailError(true);
+        setEmailErrorMessage("이메일 주소 형식에 맞춰주세요");
+      }
+      const isCheckedPassword = password.trim().length >= 8;
+      if (!isCheckedPassword) {
+        setPasswordError(true);
+        setPasswordErrorMessage("비밀번호는 8자 이상으로");
+      }
+      const isEqualPassword = password === passwordCheck;
+      if (!isEqualPassword) {
+        setPasswordCheckError(true);
+        setPasswordCheckErrorMessage("비밀번호가 일치하지 않음");
+      }
+      if (!isEmailPatter || !isCheckedPassword || isEqualPassword) {
+        setPage(1);
+        return;
+      }
+      const hasNickname = nickname.trim().length !== 0;
+      if (!hasNickname) {
+        setNicknameError(true);
+        setNicknameErrorMessage("닉네임을 입력해 주세요");
+      }
+
+      const telNumberPattern = /^[0-9]{11,13}$/;
+      const isTelNumberPattern = telNumberPattern.test(telNumber);
+      if (!isTelNumberPattern) {
+        setTelNumberError(true);
+        setTelNumberErrorMessage("숫자만 입력 가능");
+      }
+      const hasAddress = address.trim().length > 0;
+      if (!hasAddress) {
+        setAddressError(true);
+        setAddressErrorMessage("주소를 입력하세요");
+      }
+      if (!agreedPersonal) setAddressError(true);
+      if (!hasNickname || !isTelNumberPattern || !agreedPersonal) return;
+
+      const requestBody: SignUpRequestDto = {
+        email,
+        password,
+        nickname,
+        telNumber,
+        address,
+        addressDetail,
+        agreedPersonal,
+      };
+      signUpRequest(requestBody).then(signUpResponse);
+    };
 
     // event handler : 로그인 링크 클릭 이벤트 처리
     const onSignInLinkClickHandler = () => {
       setView("sign-in");
     };
+
+    // event handler : 다음(daum) 주소 검색 완료 이벤트 처리
+    const onComplete = (data: Address) => {
+      const { address } = data;
+      setAddress(address);
+      setAddressError(false);
+      setAddressErrorMessage("");
+      if (!addressDetailRef.current) return;
+      addressDetailRef.current.focus();
+    };
+
+    // effect : 페이지가 변경될 때 마다 실행될 함수 (??)
+    useEffect(() => {
+      if (page === 2) {
+        if (!nicknameRef.current) return;
+        nicknameRef.current.focus();
+      }
+    }, [page]);
 
     // render
     return (
@@ -417,7 +545,7 @@ export default function Authentication() {
                   message={addressErrorMessage}
                   icon="expand-right-light-icon"
                   onButtonClick={onAddressButtonClickHandler}
-                  onKeyDown={onAddressDetailKeyDownHandler}
+                  onKeyDown={onAddressKeyDownHandler}
                 />
                 <InputBox
                   ref={addressDetailRef}
@@ -444,10 +572,27 @@ export default function Authentication() {
             {page === 2 && (
               <>
                 <div className="auth-consent-box">
-                  <div className="auth-check-box">
-                    <div className="check-ring-light-icon"></div>
+                  <div
+                    className="auth-check-box"
+                    onClick={onAgreedPersonalClickHandler}
+                  >
+                    <div
+                      className={`icon ${
+                        agreedPersonal
+                          ? "check-round-fill-icon"
+                          : "check-ring-light-icon"
+                      }`}
+                    ></div>
                   </div>
-                  <div className="auth-consent-title">{"개인정보동의"}</div>
+                  <div
+                    className={
+                      isAgreedPersonalError
+                        ? "auth-consent-title-error"
+                        : "auth-consent-title"
+                    }
+                  >
+                    {"개인정보동의"}
+                  </div>
                   <div className="auth-consent-link">{"더보기> "}</div>
                   <div className="auth-prevpage" onClick={prevPage}>
                     {"이전으로"}

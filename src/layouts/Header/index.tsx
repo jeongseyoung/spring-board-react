@@ -135,28 +135,36 @@ export default function Header() {
     const onMyPageButtonClickHandler = () => {
       if (!loginUser) return;
       const { email } = loginUser;
-      navigate(USER_PATH(""));
+      navigate(USER_PATH(email));
     };
     // event handler : 로그인 버튼 클릭 이벤트
     const onLoginButtonClickHandler = () => {
       navigate(AUTH_PATH());
     };
     // event handler : 로그아웃 버튼 클릭 이벤트
-    const onSingOutButtonClickHandler = () => {
+    const onSignOutButtonClickHandler = () => {
+      resetLoginUser();
+      setCookie("accessToken", "", { path: MAIN_PATH(), expires: new Date() });
       navigate(MAIN_PATH());
     };
     if (isLogin) {
       // render : 마이페이지
       return (
-        <div className="white-button" onClick={onMyPageButtonClickHandler}>
-          {"마이페이지"}
+        <div>
+          <div className="white-button" onClick={onMyPageButtonClickHandler}>
+            {"마이페이지"}
+          </div>
+          <div className="white-button" onClick={onSignOutButtonClickHandler}>
+            {"로그아웃"}
+          </div>
         </div>
       );
     }
     // render : 로그아웃
     if (isLogin && userEmail === loginUser?.email)
+      // ->  작동 안함.. 수정 필요
       return (
-        <div className="white-button" onClick={onSingOutButtonClickHandler}>
+        <div className="white-button" onClick={onSignOutButtonClickHandler}>
           {"로그아웃"}
         </div>
       );
@@ -208,6 +216,14 @@ export default function Header() {
     setUserPage(isUserPage);
   }, [pathname]);
 
+  // effect : login유저가 변경될 때 마다 실행되는 함수
+  useEffect(() => {
+    console.log(loginUser, isLogin);
+    if (loginUser !== null) setLogin(true);
+    // setLogin(loginUser !== null);
+  }, [loginUser]);
+
+  // render : 헤더 레이아웃 렌더링
   return (
     <div id="header">
       <div className="header-container">
