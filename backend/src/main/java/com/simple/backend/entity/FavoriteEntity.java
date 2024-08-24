@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 // @Id가 두 개 이상? -> JpaRepository에 두개 다 맵핑 하기위해 FavoritePk를 만들고 IdClass에 ㄱㄱ~,
 // FavoritePk에 implements Serializable 필수
 @IdClass(FavoritePk.class)
-public class FavorieEntity {
+public class FavoriteEntity {
     @Id
     private String userEmail;
     @Id

@@ -47,4 +47,19 @@ public class BoardEntity {
         this.writerEmail = email;
 
     }
+
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
+
+    public void increaseFavoriteCount() {
+        this.favoriteCount++;
+        System.out.println("f 1증가");
+    }
+
+    public void decreaseFavoriteCount() {
+        this.favoriteCount--;
+        System.out.println("f 1감소");
+
+    }
 }

@@ -11,7 +11,7 @@ public interface ResponseCode {
     String DUPLICATED_NICKNAME = " DN";
     String DUPLICATED_TEL_NUMBER = "DT";
     String NOT_FOUND_USER = "NU";
-    String NOT_FOUND_POST = "NB";
+    String NOT_FOUND_BOARD = "NB";
 
     // 401
     String LOGIN_FAILED = "LF";
@@ -21,5 +21,5 @@ public interface ResponseCode {
     String NO_PERMISSION = "NP";
 
     // 500
-    String DATABASE_ERROR = "DBE";   
+    String DATABASE_ERROR = "DBE";
 }

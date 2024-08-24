@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 
 import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.res.ResponseDto;
+import com.simple.backend.dto.res.board.GetBoardResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
+import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
 import com.simple.backend.entity.BoardEntity;
+import com.simple.backend.entity.FavoriteEntity;
 import com.simple.backend.entity.ImageEntity;
 import com.simple.backend.repository.BoardRepository;
+import com.simple.backend.repository.FavoriteRepository;
 import com.simple.backend.repository.ImageRepository;
 import com.simple.backend.repository.UserRepository;
+import com.simple.backend.repository.resultSet.GetBoardResultSet;
 import com.simple.backend.service.BoardService;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,6 +29,7 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -55,6 +60,58 @@ public class BoardServiceImpl implements BoardService {
             return ResponseDto.databaseError();
         }
         return PostBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
+        GetBoardResultSet resultSet = null;
+        List<ImageEntity> imageEntitis = new ArrayList<>();
+        try {
+            // BoardEntity에는 user테이블의 nickname, profile_image가 없기 때문에
+            // GetBoardResultSet(interface)를 따로 만들어서 받아와야 함.
+            resultSet = boardRepository.getBoard(boardNumber);
+            if (resultSet == null)
+                return GetBoardResponseDto.noExistBoard();
+            imageEntitis = imageRepository.findByBoardNumber(boardNumber);
+
+            // 조회수 +1
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetBoardResponseDto.success(resultSet, imageEntitis);
+    }
+
+    @Override
+    public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email) {
+        try {
+
+            if (!userRepository.existsByEmail(email))
+                return PutFavoriteResponseDto.notExistUser();
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return PutFavoriteResponseDto.notExistBoard();
+
+            // 좋아요
+            FavoriteEntity favoriteEntity = favoriteRepository.findByBoardNumberAndUserEmail(boardNumber, email);
+            if (favoriteEntity == null) {
+                favoriteEntity = new FavoriteEntity(email, boardNumber);
+                favoriteRepository.save(favoriteEntity);
+                boardEntity.increaseFavoriteCount();
+            } else {
+                favoriteRepository.delete(favoriteEntity);
+                boardEntity.decreaseFavoriteCount();
+            }
+            boardRepository.save(boardEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PutFavoriteResponseDto.success();
     }
 
 }
