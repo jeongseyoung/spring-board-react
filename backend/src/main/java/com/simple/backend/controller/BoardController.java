@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
+import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
 import com.simple.backend.service.BoardService;
@@ -39,7 +40,6 @@ public class BoardController {
     public ResponseEntity<? super PostBoardResponseDto> postBoard(@RequestBody @Valid PostBoardRequestDto requestBody,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super PostBoardResponseDto> res = boardService.postBoard(requestBody, email);
-        System.out.println("email postboard contoller: " + requestBody + " " + email);
         return res;
     }
 
@@ -47,6 +47,14 @@ public class BoardController {
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(@PathVariable("boardNumber") Integer boardNumber,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super PutFavoriteResponseDto> res = boardService.putFavorite(boardNumber, email);
+        return res;
+    }
+
+    @GetMapping("{boardNumber}/favorite-list")
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
+            @PathVariable("boardNumber") Integer boardNumber) {
+        ResponseEntity<? super GetFavoriteListResponseDto> res = boardService.getFavoriteList(boardNumber);
+        System.out.println(res.getBody().toString());
         return res;
     }
 }
