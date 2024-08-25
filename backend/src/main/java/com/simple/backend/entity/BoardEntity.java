@@ -62,4 +62,12 @@ public class BoardEntity {
         System.out.println("f 1감소");
 
     }
+
+    public void increaseCommnetCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommnetCount() {
+        this.commentCount--;
+    }
 }

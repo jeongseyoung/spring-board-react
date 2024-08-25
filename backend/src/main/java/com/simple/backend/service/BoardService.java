@@ -3,9 +3,11 @@ package com.simple.backend.service;
 import org.springframework.http.ResponseEntity;
 
 import com.simple.backend.dto.req.board.PostBoardRequestDto;
+import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
+import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
 
 public interface BoardService {
@@ -16,4 +18,7 @@ public interface BoardService {
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email);
 
     ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber);
+
+    ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber,
+            String email);
 }

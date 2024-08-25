@@ -1,5 +1,7 @@
 package com.simple.backend.entity;
 
+import com.simple.backend.dto.req.board.PostCommentRequestDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +10,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.util.*;
+import java.time.*;
+import java.text.*;
 
 @Getter
 @AllArgsConstructor
@@ -22,4 +27,16 @@ public class CommentEntity {
     private String writeDatetime;
     private String userEmail;
     private int boardNumber;
+
+    public CommentEntity(PostCommentRequestDto dto, Integer boardNumber, String email) {
+
+        Date now = Date.from(Instant.now());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String writeDatetime = simpleDateFormat.format(now);
+        System.out.println("enity num : " + this.commentNumber);
+        this.content = dto.getContent();
+        this.writeDatetime = writeDatetime;
+        this.userEmail = email;
+        this.boardNumber = boardNumber;
+    }
 }
