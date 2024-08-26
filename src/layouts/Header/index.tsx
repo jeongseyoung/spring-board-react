@@ -20,6 +20,10 @@ import {
 import { useCookies } from "react-cookie";
 import { useBoardStore, useLoginUserStore } from "stores";
 import path from "path";
+import { fileUploadRequest, postBoardRequest } from "api";
+import { PostBoardRequestDto } from "api/req/board";
+import { PostBoardResponseDto } from "api/res/board";
+import { ResponseDto } from "api/res";
 
 // component : 헤더 레이아웃
 export default function Header() {
@@ -179,12 +183,53 @@ export default function Header() {
   const UploadButton = () => {
     // state : 게시물 상태
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
+
+    // function: post board response 처리 함수
+    const postBoardResponse = (
+      responseBody: PostBoardResponseDto | ResponseDto | null
+    ) => {
+      if (!responseBody) return;
+      const { code } = responseBody;
+      if (code === "AF" || code === "NU") navigate(AUTH_PATH());
+      if (code === "VF") alert("제목, 내용은 필수입니다.");
+      if (code === "DBE") alert("DB 오류");
+      if (code !== "SU") return;
+
+      resetBoard();
+      if (!loginUser) return;
+      const { email } = loginUser;
+      navigate(USER_PATH(email));
+    };
+
     // event handler : 업로드 버튼 클릭 이벤트
-    const onUploadButtonClickHand = () => {};
+    const onUploadButtonClickHandler = async () => {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+
+      const boardImageList: string[] = [];
+      for (const file of boardImageFileList) {
+        const data = new FormData();
+        data.append("file", file);
+
+        const url = await fileUploadRequest(data);
+        if (url) boardImageList.push(url);
+      }
+
+      const requestBody: PostBoardRequestDto = {
+        title,
+        content,
+        boardImageList,
+      };
+      postBoardRequest(requestBody, accessToken).then((response) =>
+        postBoardResponse(response ?? null)
+      );
+      // response ?? null -> response가 null 또는 undefined인 경우, null을 반환.
+      // response가 null이나 undefined가 아닌 다른 값이라면, 그 값을 그대로 반환.
+    };
     // render : 업로드 렌더링
     if (title && content.length >= 10)
       return (
-        <div className="black-button" onClick={onUploadButtonClickHand}>
+        <div className="black-button" onClick={onUploadButtonClickHandler}>
           {"업로드"}
         </div>
       );

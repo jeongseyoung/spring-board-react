@@ -1,6 +1,6 @@
 import { CommentListItem } from "types/interface";
 
-const commentList: CommentListItem[] = [
+const commentListMock: CommentListItem[] = [
   {
     nickname: "bb",
     profileImage: null,
@@ -33,4 +33,4 @@ const commentList: CommentListItem[] = [
   },
 ];
 
-export default commentList;
+export default commentListMock;
