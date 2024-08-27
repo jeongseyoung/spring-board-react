@@ -10,7 +10,9 @@ import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.ResponseDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
+import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
+import com.simple.backend.dto.res.board.IncreaseViewCountResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
 import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
@@ -24,6 +26,7 @@ import com.simple.backend.repository.FavoriteRepository;
 import com.simple.backend.repository.ImageRepository;
 import com.simple.backend.repository.UserRepository;
 import com.simple.backend.repository.resultSet.GetBoardResultSet;
+import com.simple.backend.repository.resultSet.GetCommentListResultSet;
 import com.simple.backend.repository.resultSet.GetFavoriteListResultSet;
 import com.simple.backend.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -95,10 +98,6 @@ public class BoardServiceImpl implements BoardService {
                 return GetBoardResponseDto.noExistBoard();
             imageEntitis = imageRepository.findByBoardNumber(boardNumber);
 
-            // 조회수 +1
-            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
-            boardEntity.increaseViewCount();
-            boardRepository.save(boardEntity);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
@@ -158,6 +157,38 @@ public class BoardServiceImpl implements BoardService {
             return ResponseDto.databaseError();
         }
         return PostCommentResponseDto.succes();
+    }
+
+    @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber) {
+        List<GetCommentListResultSet> resultSets = new ArrayList<>();
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return GetCommentListResponseDto.noExistBoard();
+            resultSets = commentRepository.getCommentList(boardNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetCommentListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardNumber) {
+        try {
+            // 조회수 +1
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return IncreaseViewCountResponseDto.noExistBoard();
+
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return IncreaseViewCountResponseDto.success();
     }
 
 }

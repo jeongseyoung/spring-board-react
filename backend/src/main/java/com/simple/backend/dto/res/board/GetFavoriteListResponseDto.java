@@ -21,9 +21,6 @@ public class GetFavoriteListResponseDto extends ResponseDto {
     public GetFavoriteListResponseDto(List<GetFavoriteListResultSet> resultSets) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.favoriteList = FavoriteListItem.copyList(resultSets);
-        for (FavoriteListItem f : favoriteList) {
-            System.out.println(f.getEmail() + " " + f.getNickname() + " " + f.getProfileImage());
-        }
     }
 
     public static ResponseEntity<GetFavoriteListResponseDto> success(List<GetFavoriteListResultSet> resultSets) {

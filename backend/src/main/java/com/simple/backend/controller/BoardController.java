@@ -3,6 +3,7 @@ package com.simple.backend.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
+import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
+import com.simple.backend.dto.res.board.IncreaseViewCountResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
 import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
@@ -65,6 +68,20 @@ public class BoardController {
             @RequestBody @Valid PostCommentRequestDto requestBody,
             @PathVariable("boardNumber") Integer boardNumber, @AuthenticationPrincipal String email) {
         ResponseEntity<? super PostCommentResponseDto> res = boardService.postComment(requestBody, boardNumber, email);
+        return res;
+    }
+
+    @GetMapping("/{boardNumber}/comment-list")
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(
+            @PathVariable("boardNumber") Integer boardNumber) {
+        ResponseEntity<? super GetCommentListResponseDto> res = boardService.getCommentList(boardNumber);
+        return res;
+    }
+
+    @PatchMapping("{boardNumber}/increase-view-count")
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(
+            @PathVariable("boardNumber") Integer boardNumber) {
+        ResponseEntity<? super IncreaseViewCountResponseDto> res = boardService.increaseViewCount(boardNumber);
         return res;
     }
 }
