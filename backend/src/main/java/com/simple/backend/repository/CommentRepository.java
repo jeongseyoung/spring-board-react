@@ -7,6 +7,8 @@ import java.util.*;
 import com.simple.backend.entity.CommentEntity;
 import com.simple.backend.repository.resultSet.GetCommentListResultSet;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 
@@ -18,4 +20,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
             "WHERE C.board_number = ?1 " +
             "ORDER BY write_datetime DESC;", nativeQuery = true)
     List<GetCommentListResultSet> getCommentList(Integer boardNumber);
+
+    @Transactional
+    void deleteByBoardNumber(Integer boardNumber);
 }
