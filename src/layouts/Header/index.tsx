@@ -24,6 +24,7 @@ import { fileUploadRequest, postBoardRequest } from "api";
 import { PostBoardRequestDto } from "api/req/board";
 import { PostBoardResponseDto } from "api/res/board";
 import { ResponseDto } from "api/res";
+import { request } from "http";
 
 // component : 헤더 레이아웃
 export default function Header() {
@@ -189,10 +190,13 @@ export default function Header() {
       responseBody: PostBoardResponseDto | ResponseDto | null
     ) => {
       if (!responseBody) return;
-      const { code } = responseBody;
-      if (code === "AF" || code === "NU") navigate(AUTH_PATH());
-      if (code === "VF") alert("제목, 내용은 필수입니다.");
-      if (code === "DBE") alert("DB 오류");
+      const { code, message } = responseBody;
+      if (code === "AF" || code === "NU") {
+        alert(message);
+        navigate(AUTH_PATH());
+      }
+      if (code === "VF") alert(message);
+      if (code === "DBE") alert(message);
       if (code !== "SU") return;
 
       resetBoard();
@@ -220,6 +224,10 @@ export default function Header() {
         content,
         boardImageList,
       };
+      if (requestBody.title.length <= 9 && requestBody.content.length <= 9) {
+        alert("제목,내용은 10자 이상");
+        return;
+      }
       postBoardRequest(requestBody, accessToken).then((response) =>
         postBoardResponse(response ?? null)
       );
@@ -227,7 +235,7 @@ export default function Header() {
       // response가 null이나 undefined가 아닌 다른 값이라면, 그 값을 그대로 반환.
     };
     // render : 업로드 렌더링
-    if (title && content.length >= 10)
+    if (title && content.length)
       return (
         <div className="black-button" onClick={onUploadButtonClickHandler}>
           {"업로드"}

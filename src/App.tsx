@@ -16,7 +16,7 @@ import Header from "layouts/Header";
 import { Route, Routes } from "react-router-dom";
 import Main from "views/Main";
 import Authentication from "views/Authentication";
-import Search from "views/Seach";
+import Search from "views/Search";
 import UserP from "views/User";
 import BoardWrite from "views/Board/Write";
 import BoardUpdate from "views/Board/Update";

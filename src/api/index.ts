@@ -3,9 +3,18 @@ import { SignInRequestDto, SignUpRequestDto } from "./req/auth";
 import { SignInResponseDto, SignUpResponseDto } from "./res/auth";
 import { ResponseDto } from "./res";
 import { GetSignInUserResponseDto } from "./res/user";
-import { PostBoardRequestDto } from "./req/board";
+import { PostBoardRequestDto, PostCommentRequestDto } from "./req/board";
 import { request } from "http";
-import { PostBoardResponseDto } from "./res/board";
+import {
+  PostBoardResponseDto,
+  GetBoardResponseDto,
+  IncreaseViewCountResponseDto,
+  GetFavoriteListResponseDto,
+  GetCommentListResponseDto,
+  PutFavoriteResponseDto,
+  PostCommentResponseDto,
+  DeleteBoardResponseDto,
+} from "./res/board";
 
 //export {};
 //export const DOMAIN = "http://localhost:4000";
@@ -102,8 +111,152 @@ export const fileUploadRequest = async (data: FormData) => {
       const responseBody: string = response.data;
       return responseBody;
     })
-    .catch((err) => {
-      return null;
+    .catch((error) => {
+      if (!error.response) return null;
+      //const responseBody: ResponseDto = error.response.data;
+      //return responseBody;
+    });
+  return result;
+};
+
+// 게시물 출력
+const GET_BOARD_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}`;
+export const getBoardRequest = async (boardNumber: string | number) => {
+  const result = await axios
+    .get(GET_BOARD_URL(boardNumber))
+    .then((response) => {
+      const responseBody: GetBoardResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 게시물 조회수 +1
+const INCREASE_BOARD_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
+export const IncreaseViewCountResponse = async (
+  boardNumber: string | number
+) => {
+  const result = await axios
+    .get(INCREASE_BOARD_URL(boardNumber))
+    .then((response) => {
+      const responseBody: IncreaseViewCountResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 좋아요 리스트
+const GET_FAVORITE_LIST_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
+export const getFavoriteListRequest = async (boardNumber: string | number) => {
+  const result = await axios
+    .get(GET_FAVORITE_LIST_URL(boardNumber))
+    .then((response) => {
+      const responseBody: GetFavoriteListResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 댓글 리스트
+const GET_COMMENT_LIST_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}/comment-list`;
+export const getCommentListRequest = async (boardNumber: string | number) => {
+  const result = await axios
+    .get(GET_COMMENT_LIST_URL(boardNumber))
+    .then((response) => {
+      const responseBody: GetCommentListResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 좋아요 +1
+const PUT_FAVORITE_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}/favorite`;
+export const PutFavoriteRequest = async (
+  boardNumber: string | number,
+  accessToken: string
+) => {
+  const result = await axios
+    .put(PUT_FAVORITE_URL(boardNumber), {}, authorization(accessToken))
+    .then((response) => {
+      const responseBody: PutFavoriteResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 댓글 작성
+const POST_COMMENT_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}/comment`;
+export const PostCommentRequest = async (
+  boardNumber: string | number,
+  requestBody: PostCommentRequestDto,
+  accessToken: string
+) => {
+  const result = await axios
+    .post(
+      POST_COMMENT_URL(boardNumber),
+      requestBody,
+      authorization(accessToken)
+    )
+    .then((response) => {
+      const responseBody: PostCommentResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 게시물 삭제 delete
+const DELETE_BOARD_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}`;
+export const DeleteBoardRequest = async (
+  boardNumber: string | number,
+  accessToken: string
+) => {
+  const result = await axios
+    .delete(DELETE_BOARD_URL(boardNumber), authorization(accessToken))
+    .then((response) => {
+      const responseBody: DeleteBoardResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
     });
   return result;
 };
