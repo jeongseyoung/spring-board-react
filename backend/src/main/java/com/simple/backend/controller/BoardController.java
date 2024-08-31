@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,13 +12,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simple.backend.dto.req.board.PatchBoardRequestDto;
 import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.board.DeleteBoardResponseDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
 import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
+import com.simple.backend.dto.res.board.GetLatestBoardListResponseDto;
 import com.simple.backend.dto.res.board.IncreaseViewCountResponseDto;
+import com.simple.backend.dto.res.board.PatchBoardResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
 import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
@@ -91,6 +95,19 @@ public class BoardController {
     public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(@PathVariable("boardNumber") Integer boardNumber,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super DeleteBoardResponseDto> res = boardService.deleteBoard(boardNumber, email);
+        return res;
+    }
+
+    @PatchMapping("/{boardNumber}")
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(@RequestBody @Valid PatchBoardRequestDto dto,
+            @PathVariable("boardNumber") Integer boardNumber, @AuthenticationPrincipal String email) {
+        ResponseEntity<? super PatchBoardResponseDto> res = boardService.patchBoard(dto, boardNumber, email);
+        return res;
+    }
+
+    @GetMapping("/latest-list")
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+        ResponseEntity<? super GetLatestBoardListResponseDto> res = boardService.getLatestBoardList();
         return res;
     }
 }

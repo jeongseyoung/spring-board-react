@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.simple.backend.dto.req.board.PatchBoardRequestDto;
 import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.ResponseDto;
@@ -13,14 +14,18 @@ import com.simple.backend.dto.res.board.DeleteBoardResponseDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
 import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
+import com.simple.backend.dto.res.board.GetLatestBoardListResponseDto;
 import com.simple.backend.dto.res.board.IncreaseViewCountResponseDto;
+import com.simple.backend.dto.res.board.PatchBoardResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
 import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
 import com.simple.backend.entity.BoardEntity;
+import com.simple.backend.entity.BoardListViewEntity;
 import com.simple.backend.entity.CommentEntity;
 import com.simple.backend.entity.FavoriteEntity;
 import com.simple.backend.entity.ImageEntity;
+import com.simple.backend.repository.BoardListViewRepository;
 import com.simple.backend.repository.BoardRepository;
 import com.simple.backend.repository.CommentRepository;
 import com.simple.backend.repository.FavoriteRepository;
@@ -41,6 +46,7 @@ public class BoardServiceImpl implements BoardService {
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
     private final CommentRepository commentRepository;
+    private final BoardListViewRepository boardListViewRepository;;
 
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -216,6 +222,50 @@ public class BoardServiceImpl implements BoardService {
             return ResponseDto.databaseError();
         }
         return DeleteBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardNumber,
+            String email) {
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return PatchBoardResponseDto.notExistBoard();
+            if (!userRepository.existsByEmail(email))
+                return PatchBoardResponseDto.notExistUser();
+            if (!boardEntity.getWriterEmail().equals(email))
+                return PatchBoardResponseDto.noPermission();
+
+            boardEntity.patchBoard(dto);
+            boardRepository.save(boardEntity);
+
+            imageRepository.deleteByBoardNumber(boardNumber);
+            List<String> temp_images = dto.getBoardImageList();
+            List<ImageEntity> imageEntities = new ArrayList<>();
+            for (String image : temp_images) {
+                ImageEntity temp_Entity = new ImageEntity(boardNumber, image);
+                imageEntities.add(temp_Entity);
+            }
+            imageRepository.saveAll(imageEntities);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PatchBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+
+        List<BoardListViewEntity> list = new ArrayList<>();
+
+        try {
+            list = boardListViewRepository.findByOrderByWriteDatetimeDesc();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetLatestBoardListResponseDto.success(list);
     }
 
 }

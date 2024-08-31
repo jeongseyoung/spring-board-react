@@ -1,1 +1,1 @@
-1. Jwt생성
+springboot, react, typescript연동 blog예제
