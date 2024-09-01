@@ -7,6 +7,7 @@ import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.board.DeleteBoardResponseDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
+import com.simple.backend.dto.res.board.GetBoardTop3ListResponseDto;
 import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
 import com.simple.backend.dto.res.board.GetLatestBoardListResponseDto;
@@ -38,4 +39,6 @@ public interface BoardService {
                         String email);
 
         ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
+
+        ResponseEntity<? super GetBoardTop3ListResponseDto> getTop3BoardList();
 }

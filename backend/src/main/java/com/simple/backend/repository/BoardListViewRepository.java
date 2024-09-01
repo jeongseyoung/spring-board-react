@@ -10,4 +10,8 @@ import com.simple.backend.entity.BoardListViewEntity;
 @Repository
 public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Integer> {
     List<BoardListViewEntity> findByOrderByWriteDatetimeDesc();
+
+    // Top3 = SQL에서 LIMIT 3
+    List<BoardListViewEntity> findTop3ByWriteDatetimeGreaterThanOrderByFavoriteCountDescCommentCountDescViewCountDescWriteDatetimeDesc(
+            String Datetime);
 }

@@ -17,6 +17,7 @@ import com.simple.backend.dto.req.board.PostBoardRequestDto;
 import com.simple.backend.dto.req.board.PostCommentRequestDto;
 import com.simple.backend.dto.res.board.DeleteBoardResponseDto;
 import com.simple.backend.dto.res.board.GetBoardResponseDto;
+import com.simple.backend.dto.res.board.GetBoardTop3ListResponseDto;
 import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
 import com.simple.backend.dto.res.board.GetLatestBoardListResponseDto;
@@ -108,6 +109,14 @@ public class BoardController {
     @GetMapping("/latest-list")
     public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
         ResponseEntity<? super GetLatestBoardListResponseDto> res = boardService.getLatestBoardList();
+        return res;
+    }
+
+    @GetMapping("/top-3")
+    public ResponseEntity<? super GetBoardTop3ListResponseDto> getTop3BoardList() {
+        System.out.println("top3");
+        ResponseEntity<? super GetBoardTop3ListResponseDto> res = boardService.getTop3BoardList();
+        System.out.println("res : " + res);
         return res;
     }
 }
