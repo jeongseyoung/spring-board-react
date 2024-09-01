@@ -3,7 +3,7 @@ import "./App.css";
 import BoardListItemRendering from "components/BoardListItem";
 import {
   lastestBoardListMock,
-  top3Item,
+  top3ItemMock,
   commentList,
   favoriteListMock,
 } from "mocks";

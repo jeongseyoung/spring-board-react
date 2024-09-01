@@ -3,7 +3,11 @@ import { SignInRequestDto, SignUpRequestDto } from "./req/auth";
 import { SignInResponseDto, SignUpResponseDto } from "./res/auth";
 import { ResponseDto } from "./res";
 import { GetSignInUserResponseDto } from "./res/user";
-import { PostBoardRequestDto, PostCommentRequestDto } from "./req/board";
+import {
+  PatchBoardRequestDto,
+  PostBoardRequestDto,
+  PostCommentRequestDto,
+} from "./req/board";
 import { request } from "http";
 import {
   PostBoardResponseDto,
@@ -14,7 +18,9 @@ import {
   PutFavoriteResponseDto,
   PostCommentResponseDto,
   DeleteBoardResponseDto,
+  PatchBoardResponseDto,
 } from "./res/board";
+import { access } from "fs";
 
 //export {};
 //export const DOMAIN = "http://localhost:4000";
@@ -66,6 +72,7 @@ export const postBoardRequest = async (
   const result = await axios
     .post(POST_BOARD_URL(), requestBody, authorization(accessToken))
     .then((response) => {
+      console.log("postBoardRequest");
       const responseBody: PostBoardResponseDto = response.data;
       return responseBody;
     })
@@ -251,6 +258,32 @@ export const DeleteBoardRequest = async (
     .delete(DELETE_BOARD_URL(boardNumber), authorization(accessToken))
     .then((response) => {
       const responseBody: DeleteBoardResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 게시물 업데이트, patch
+const PATCH_BOARD_URL = (boardNumber: string | number) =>
+  `${API_DOMAIN}/board/${boardNumber}`;
+export const patchBoardRequest = async (
+  boardNumber: string | number,
+  requestBody: PatchBoardRequestDto,
+  accessToken: string
+) => {
+  const result = await axios
+    .patch(
+      PATCH_BOARD_URL(boardNumber),
+      requestBody,
+      authorization(accessToken)
+    )
+    .then((response) => {
+      const responseBody: PatchBoardResponseDto = response.data;
       return responseBody;
     })
     .catch((error) => {

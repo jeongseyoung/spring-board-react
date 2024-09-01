@@ -19,7 +19,6 @@ export default function CommentList({ commentList }: Props) {
 
     //now - wrtietime 초단위로 계산
     const gap = now.diff(writeTime, "s");
-    console.log("gap", now, writeTime, gap);
     if (gap < 60) return `${gap}초 전`;
     if (gap < 3600) return `${Math.floor(gap / 60)}분 전`;
     if (gap < 86400) return `${Math.floor(gap / 3600)}시간 전`;

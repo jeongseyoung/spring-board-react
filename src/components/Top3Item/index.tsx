@@ -2,6 +2,8 @@ import React from "react";
 import "./style.css";
 import defaultImage from "assets/image/bus.jpg";
 import { BoardListItem } from "types/interface";
+import { useNavigate } from "react-router-dom";
+import { BOARD_PATH, BOARD_DETAIL_PATH } from "constant";
 
 interface Props {
   top3ListItem: BoardListItem;
@@ -10,11 +12,11 @@ interface Props {
 //top3 List Item 컴포넌트
 export default function Top3Item({ top3ListItem }: Props) {
   // //function: 네비게이트 함수
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
   // //event handler : 게시물 아이템 클릭 이벤트 처리 함수
-  // const onClickHandler = () => {
-  //   navigator(boardNumber);
-  // };
+  const onClickHandler = () => {
+    navigator(BOARD_PATH() + "/" + BOARD_DETAIL_PATH(boardNumber));
+  };
 
   //properties
   const { boardNumber, title, content, boardTitleImage } = top3ListItem;

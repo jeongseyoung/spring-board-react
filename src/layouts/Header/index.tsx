@@ -20,9 +20,9 @@ import {
 import { useCookies } from "react-cookie";
 import { useBoardStore, useLoginUserStore } from "stores";
 import path from "path";
-import { fileUploadRequest, postBoardRequest } from "api";
-import { PostBoardRequestDto } from "api/req/board";
-import { PostBoardResponseDto } from "api/res/board";
+import { fileUploadRequest, patchBoardRequest, postBoardRequest } from "api";
+import { PatchBoardRequestDto, PostBoardRequestDto } from "api/req/board";
+import { PatchBoardResponseDto, PostBoardResponseDto } from "api/res/board";
 import { ResponseDto } from "api/res";
 import { request } from "http";
 
@@ -56,10 +56,12 @@ export default function Header() {
   // state : 유저 페이지 상태
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
+  const { boardNumber } = useParams();
+
   // function : navigate함수;
-  const navigate = useNavigate();
+  const navigator = useNavigate();
   const onLogoClickHandler = () => {
-    navigate(MAIN_PATH());
+    navigator(MAIN_PATH());
   };
 
   //component - 검색버튼
@@ -92,7 +94,7 @@ export default function Header() {
         setStatus(!status);
         return;
       }
-      navigate(SEARCH_PATH(word));
+      navigator(SEARCH_PATH(word));
     };
 
     // effect - 검색어 경로가 바뀔때 마다 실행되는 함수
@@ -140,17 +142,17 @@ export default function Header() {
     const onMyPageButtonClickHandler = () => {
       if (!loginUser) return;
       const { email } = loginUser;
-      navigate(USER_PATH(email));
+      navigator(USER_PATH(email));
     };
     // event handler : 로그인 버튼 클릭 이벤트
     const onLoginButtonClickHandler = () => {
-      navigate(AUTH_PATH());
+      navigator(AUTH_PATH());
     };
     // event handler : 로그아웃 버튼 클릭 이벤트
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
       setCookie("accessToken", "", { path: MAIN_PATH(), expires: new Date() });
-      navigate(MAIN_PATH());
+      navigator(MAIN_PATH());
     };
     if (isLogin) {
       // render : 마이페이지
@@ -185,7 +187,7 @@ export default function Header() {
     // state : 게시물 상태
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
 
-    // function: post board response 처리 함수
+    // function: post board response, patchBoardResponse 처리 함수
     const postBoardResponse = (
       responseBody: PostBoardResponseDto | ResponseDto | null
     ) => {
@@ -193,16 +195,32 @@ export default function Header() {
       const { code, message } = responseBody;
       if (code === "AF" || code === "NU") {
         alert(message);
-        navigate(AUTH_PATH());
+        navigator(AUTH_PATH());
       }
-      if (code === "VF") alert(message);
+      //if (code === "VF") alert(message);
       if (code === "DBE") alert(message);
       if (code !== "SU") return;
 
       resetBoard();
       if (!loginUser) return;
       const { email } = loginUser;
-      navigate(USER_PATH(email));
+      navigator(USER_PATH(email));
+    };
+
+    const patchBoardResponse = (
+      responseBody: PatchBoardResponseDto | ResponseDto | null
+    ) => {
+      if (!responseBody) return;
+      const { code, message } = responseBody;
+      if (code === "AF" || code === "NU" || code === "NB" || code === "NP") {
+        alert(code + " " + message);
+        navigator(AUTH_PATH());
+      }
+      if (code === "VF") alert("제목과 내용은 필수입니다.");
+      if (code === "DBE") alert(message);
+
+      if (!boardNumber) return;
+      navigator(BOARD_PATH() + "/" + BOARD_DETAIL_PATH(boardNumber));
     };
 
     // event handler : 업로드 버튼 클릭 이벤트
@@ -219,20 +237,36 @@ export default function Header() {
         if (url) boardImageList.push(url);
       }
 
-      const requestBody: PostBoardRequestDto = {
-        title,
-        content,
-        boardImageList,
-      };
-      if (requestBody.title.length <= 9 && requestBody.content.length <= 9) {
-        alert("제목,내용은 10자 이상");
-        return;
+      const isWritePage =
+        pathname === BOARD_PATH() + "/" + BOARD_WRITE_PATH() ? true : false;
+      if (isWritePage) {
+        console.log("write", pathname, isWritePage);
+        const requestBody: PostBoardRequestDto = {
+          title,
+          content,
+          boardImageList,
+        };
+        if (requestBody.title.length <= 9 && requestBody.content.length <= 9) {
+          alert("제목,내용은 10자 이상");
+          return;
+        }
+        postBoardRequest(requestBody, accessToken).then((response) =>
+          postBoardResponse(response ?? null)
+        );
+        // response ?? null -> response가 null 또는 undefined인 경우, null을 반환.
+        // response가 null이나 undefined가 아닌 다른 값이라면, 그 값을 그대로 반환.
+      } else {
+        if (!boardNumber) return;
+        const requestBody: PatchBoardRequestDto = {
+          title,
+          content,
+          boardImageList,
+        };
+        console.log("update");
+        patchBoardRequest(boardNumber, requestBody, accessToken).then(
+          patchBoardResponse
+        );
       }
-      postBoardRequest(requestBody, accessToken).then((response) =>
-        postBoardResponse(response ?? null)
-      );
-      // response ?? null -> response가 null 또는 undefined인 경우, null을 반환.
-      // response가 null이나 undefined가 아닌 다른 값이라면, 그 값을 그대로 반환.
     };
     // render : 업로드 렌더링
     if (title && content.length)

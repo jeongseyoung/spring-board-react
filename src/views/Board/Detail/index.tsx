@@ -2,12 +2,9 @@ import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./style.css";
 import FavoriteItem from "components/FavoriteItem";
 import { Board, CommentListItem, FavoriteListItem } from "types/interface";
-import { boardMock, favoriteListMock } from "mocks";
-import commentListMock from "mocks/comment-list.mock";
 import CommentList from "components/CommentItem";
 import Pagination from "components/Pagination";
 import defaultProfileImage from "assets/image/hero-image.webp";
-import defaultTopMainImage from "assets/image/bus.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoginUserStore } from "stores";
 import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from "constant";
@@ -139,6 +136,7 @@ export default function BoardDetail() {
 
     // effect : 게시물 번호 path variable이 바뀔 때마다 게시물 불러오기
     useEffect(() => {
+      console.log("loginUser", loginUser);
       if (!boardNumber) {
         navigator(MAIN_PATH());
         return;
