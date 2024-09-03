@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.simple.backend.dto.res.ResponseDto;
 import com.simple.backend.dto.res.search.GetPopularListResponseDto;
+import com.simple.backend.dto.res.search.GetRelationListResponseDto;
 import com.simple.backend.repository.SearchLogRepository;
 import com.simple.backend.repository.resultSet.GetPopularListResultSet;
+import com.simple.backend.repository.resultSet.GetRelationListResultSet;
 import com.simple.backend.service.SearchService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,9 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public ResponseEntity<? super GetPopularListResponseDto> getPopularWordList() {
+
         List<GetPopularListResultSet> getPopularResultSet = new ArrayList<>();
+
         try {
             getPopularResultSet = searchLogRepository.getPopularList();
         } catch (Exception e) {
@@ -29,6 +33,20 @@ public class SearchServiceImpl implements SearchService {
             return ResponseDto.databaseError();
         }
         return GetPopularListResponseDto.success(getPopularResultSet);
+    }
+
+    @Override
+    public ResponseEntity<? super GetRelationListResponseDto> getRelationList(String searchWord) {
+
+        List<GetRelationListResultSet> resultSets = new ArrayList<>();
+
+        try {
+            resultSets = searchLogRepository.getRelationListResultSet(searchWord);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetRelationListResponseDto.success(resultSets);
     }
 
 }

@@ -21,6 +21,7 @@ import com.simple.backend.dto.res.board.GetBoardTop3ListResponseDto;
 import com.simple.backend.dto.res.board.GetCommentListResponseDto;
 import com.simple.backend.dto.res.board.GetFavoriteListResponseDto;
 import com.simple.backend.dto.res.board.GetLatestBoardListResponseDto;
+import com.simple.backend.dto.res.board.GetSearchBoardListResponseDto;
 import com.simple.backend.dto.res.board.IncreaseViewCountResponseDto;
 import com.simple.backend.dto.res.board.PatchBoardResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
@@ -114,9 +115,17 @@ public class BoardController {
 
     @GetMapping("/top-3")
     public ResponseEntity<? super GetBoardTop3ListResponseDto> getTop3BoardList() {
-        System.out.println("top3");
         ResponseEntity<? super GetBoardTop3ListResponseDto> res = boardService.getTop3BoardList();
-        System.out.println("res : " + res);
+        return res;
+    }
+
+    @GetMapping(value = { "/search-list/{searchWord}", "/search-list/{searchWord}/{preSearchWord}" })
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
+            @PathVariable("searchWord") String searchWord,
+            @PathVariable(value = "preSearchWord", required = false) String preSearchWord) {
+        System.out.println("1: " + searchWord + " 2: " + preSearchWord);
+        ResponseEntity<? super GetSearchBoardListResponseDto> res = boardService.getSearchBoardList(searchWord,
+                preSearchWord);
         return res;
     }
 }
