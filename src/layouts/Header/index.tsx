@@ -20,7 +20,12 @@ import {
 import { useCookies } from "react-cookie";
 import { useBoardStore, useLoginUserStore } from "stores";
 import path from "path";
-import { fileUploadRequest, patchBoardRequest, postBoardRequest } from "api";
+import {
+  fileUploadRequest,
+  getSearchBoardListRequest,
+  patchBoardRequest,
+  postBoardRequest,
+} from "api";
 import { PatchBoardRequestDto, PostBoardRequestDto } from "api/req/board";
 import { PatchBoardResponseDto, PostBoardResponseDto } from "api/res/board";
 import { ResponseDto } from "api/res";

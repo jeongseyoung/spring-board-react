@@ -6,24 +6,45 @@ import { BoardListItem } from "types/interface";
 import { lastestBoardListMock, top3ItemMock } from "mocks";
 import BoardListItemRendering from "components/BoardListItem";
 import Pagination from "components/Pagination";
+import {
+  getLastestListRequest,
+  getPopularWordListRequest,
+  getTop3ListRequest,
+} from "api";
+import {
+  GetLatestBoardListResponseDto,
+  GetPopularListResponseDto,
+  GetTop3BoardListResponseDto,
+} from "api/res/board";
+import { ResponseDto } from "api/res";
+import { usePagination } from "hooks";
+import { SEARCH_PATH } from "constant";
 import { useNavigate } from "react-router-dom";
-import { MAIN_PATH, SEARCH_PATH } from "constant";
 
 // component : 메인 화면 컴포넌트
 export default function Main() {
   const { loginUser } = useLoginUserStore();
 
-  // function : navigator
-  const navigator = useNavigate();
-
   // component : 메인 상단
   const MainTop = () => {
     // state : top3 주간 게시물 상태
     const [top3BoardList, setTop3BoardList] = useState<BoardListItem[]>([]);
+    // function : top3listResponse
+    const top3listResponse = (
+      responseBody: GetTop3BoardListResponseDto | ResponseDto | null
+    ) => {
+      if (!responseBody) return;
+      const { code, message } = responseBody;
+      if (code === "DBE") alert(message);
+      if (code !== "SU") return;
 
+      const { top3List } = responseBody as GetTop3BoardListResponseDto;
+      setTop3BoardList(top3List);
+    };
     // effect : 마운트 시
     useEffect(() => {
-      setTop3BoardList(top3ItemMock); // mock
+      //setTop3BoardList(top3ItemMock); // mock
+      getTop3ListRequest().then(top3listResponse);
     }, []);
     // render
     return (
@@ -44,23 +65,62 @@ export default function Main() {
   };
 
   // component : 메인 하단
-
-  // state : 최신 게시물 리스트 상태
-  const [currentBoardList, setCurrentBoardList] = useState<BoardListItem[]>([]);
-
-  // state : 인기 검색어 리스트 상태
-  const [popularWordList, setPopularWordList] = useState<string[]>([]);
-
-  // event handler : 인기 검색어 클릭 핸들러
-  const onPopularWordClickHandler = (item: string | number) => {
-    navigator(SEARCH_PATH(item));
-  };
-  // effect : 마운트 시
-  useEffect(() => {
-    setCurrentBoardList(lastestBoardListMock);
-    setPopularWordList(["hi", "zz", "flower"]);
-  }, []);
   const MainBottom = () => {
+    // state : pagination 관련 상태
+    const {
+      currentPage,
+      currentSection,
+      totalSection,
+      viewList,
+      viewPageList,
+      setCurrentSection,
+      setCurretPage,
+      setTotalList,
+    } = usePagination<BoardListItem>(5); // 5개씩 보여줌
+
+    const [popularWordList, setPopularWordList] = useState<string[]>([]);
+
+    // function : getLastestListResponse
+    const getLastestListResponse = (
+      responseBody: GetLatestBoardListResponseDto | ResponseDto | null
+    ) => {
+      if (!responseBody) return;
+      const { code, message } = responseBody;
+      if (code == "DBE") alert(message);
+      if (code !== "SU") return;
+
+      const { latestList } = responseBody as GetLatestBoardListResponseDto;
+      setTotalList(latestList);
+    };
+
+    // function : getPopularWordListResponse
+    const getPopularWordListResponse = (
+      responseBody: GetPopularListResponseDto | ResponseDto | null
+    ) => {
+      if (!responseBody) return;
+      const { code, message } = responseBody;
+      if (code === "DBE") alert(message);
+      if (code !== "SU") {
+        alert(message);
+        return;
+      }
+
+      const { popularWordList } = responseBody as GetPopularListResponseDto;
+      setPopularWordList(popularWordList);
+    };
+
+    // function : navigator
+    const navigator = useNavigate();
+    //const onPopularWordClickHandler = (word: string) => {};
+
+    // effect : 마운트 시
+    useEffect(() => {
+      //setCurrentBoardList(lastestBoardListMock); // mock
+      //setPopularWordList(["hi", "zz", "flower"]); // mock
+      getLastestListRequest().then(getLastestListResponse);
+      getPopularWordListRequest().then(getPopularWordListResponse);
+    }, []);
+
     // render
     return (
       <div id="main-bottom-wrapper">
@@ -68,7 +128,7 @@ export default function Main() {
           <div className="main-bottom-title"></div>
           <div className="main-bottom-contents-box">
             <div className="main-bottom-current-contents">
-              {currentBoardList.map((boardListitem) => (
+              {viewList.map((boardListitem) => (
                 <BoardListItemRendering boardlistItem={boardListitem} />
               ))}
             </div>
@@ -82,7 +142,7 @@ export default function Main() {
                     {popularWordList.map((item) => (
                       <div
                         className="word-badge"
-                        onClick={() => onPopularWordClickHandler(item)}
+                        onClick={() => navigator(SEARCH_PATH(item))}
                       >
                         {item}
                       </div>
@@ -93,7 +153,15 @@ export default function Main() {
             </div>
           </div>
           <div className="main-bottom-pagination-box">
-            {/* <Pagination /> */}
+            <Pagination
+              currentPage={currentPage}
+              currentSection={currentSection}
+              setCurrentPage={setCurretPage}
+              setCurrentSection={setCurrentSection}
+              viewPageList={viewPageList}
+              totalSection={totalSection}
+            />
+            {/*69 */}
           </div>
         </div>
       </div>

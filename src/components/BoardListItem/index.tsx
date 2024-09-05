@@ -3,6 +3,7 @@ import "./style.css";
 import { BoardListItem } from "types/interface";
 import { useNavigate } from "react-router-dom";
 import defaultImage from "assets/image/bus.jpg";
+import { BOARD_DETAIL_PATH, BOARD_PATH } from "constant";
 interface Props {
   boardlistItem: BoardListItem;
 }
@@ -15,17 +16,21 @@ export default function BoardListItemRendering({ boardlistItem }: Props) {
   const { writeDatetime, writerNickname, writerProfileImage } = boardlistItem;
 
   // //function: 네비게이트 함수
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
 
   // //event handler : 게시물 아이템 클릭 이벤트 처리 함수
-  // const onClickHandler = () => {
-  //   navigator(boardNumber);
-  // };
+  const onClickHandler = (bn: number) => {
+    console.log(bn);
+    navigator(BOARD_PATH() + "/" + BOARD_DETAIL_PATH(bn));
+  };
 
   //https://ichef.bbci.co.uk/news/976/cpsprodpb/16620/production/_91408619_55df76d5-2245-41c1-8031-07a4da3f313f.jpg.webp
   // render: Board List Item component rendering
   return (
-    <div className="board-list-item">
+    <div
+      className="board-list-item"
+      onClick={() => onClickHandler(boardNumber)}
+    >
       <div className="board-list-item-box">
         <div className="board-list-item-top">
           <div className="board-list-item-profile-box">
@@ -61,7 +66,7 @@ export default function BoardListItemRendering({ boardlistItem }: Props) {
           <div
             className="board-list-item-image"
             style={{
-              backgroundImage: `url(https://ichef.bbci.co.uk/news/976/cpsprodpb/16620/production/_91408619_55df76d5-2245-41c1-8031-07a4da3f313f.jpg.webp)`,
+              backgroundImage: `url(${boardTitleImage})`,
             }}
           ></div>
         </div>
