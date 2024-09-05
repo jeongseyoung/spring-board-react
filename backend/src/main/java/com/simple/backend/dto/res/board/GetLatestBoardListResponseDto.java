@@ -1,6 +1,6 @@
 package com.simple.backend.dto.res.board;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.http.ResponseEntity;
 
@@ -15,7 +15,7 @@ import lombok.Getter;
 @Getter
 public class GetLatestBoardListResponseDto extends ResponseDto {
 
-    private List<BoardListItem> latestList;
+    private List<BoardListItem> latestList = new ArrayList<>();
 
     public GetLatestBoardListResponseDto(List<BoardListViewEntity> boardListViewEntities) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);

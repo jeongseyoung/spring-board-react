@@ -16,6 +16,7 @@ import lombok.Getter;
 public class GetRelationListResponseDto extends ResponseDto {
 
     private List<String> relativeWordList = new ArrayList<>();
+    // const { relativeWordList } = responseBody as GetRelationListResponseDto
 
     public GetRelationListResponseDto(List<GetRelationListResultSet> resultSets) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);

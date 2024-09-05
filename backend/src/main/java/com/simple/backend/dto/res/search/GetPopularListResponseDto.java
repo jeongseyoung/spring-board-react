@@ -13,7 +13,8 @@ import lombok.Getter;
 
 @Getter
 public class GetPopularListResponseDto extends ResponseDto {
-    private List<String> popularWordList;
+
+    List<String> popularWordList = new ArrayList<>();
 
     public GetPopularListResponseDto(List<GetPopularListResultSet> resultSet) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
@@ -21,11 +22,6 @@ public class GetPopularListResponseDto extends ResponseDto {
         for (GetPopularListResultSet c : resultSet) {
             this.popularWordList.add(c.getSearchWord()); // "popularWordList": null 왜?
         }
-        // List<String> list = new ArrayList<>();
-        // for (GetPopularListResultSet g : resultSet) {
-        // popularWordList.add(g.getSearchWord());
-        // }
-        // this.popularWordList = list; //"popularWordList": []
     }
 
     public static ResponseEntity<GetPopularListResponseDto> success(

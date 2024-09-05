@@ -27,6 +27,7 @@ import com.simple.backend.dto.res.board.PatchBoardResponseDto;
 import com.simple.backend.dto.res.board.PostBoardResponseDto;
 import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
+import com.simple.backend.dto.res.search.GetPopularListResponseDto;
 import com.simple.backend.service.BoardService;
 
 import jakarta.validation.Valid;
@@ -126,6 +127,7 @@ public class BoardController {
         System.out.println("1: " + searchWord + " 2: " + preSearchWord);
         ResponseEntity<? super GetSearchBoardListResponseDto> res = boardService.getSearchBoardList(searchWord,
                 preSearchWord);
+        System.out.println("tostring " + res.getBody().toString());
         return res;
     }
 }

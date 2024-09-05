@@ -26,6 +26,12 @@ public class SearchController {
         return res;
     }
 
+    @GetMapping("/popularword-list")
+    public ResponseEntity<? super GetPopularListResponseDto> getPopularWordList() {
+        ResponseEntity<? super GetPopularListResponseDto> res = searchService.getPopularWordList();
+        return res;
+    }
+
     @GetMapping("/{searchWord}/relation-list")
     public ResponseEntity<? super GetRelationListResponseDto> getRelationList(
             @PathVariable("searchWord") String searchWord) {
