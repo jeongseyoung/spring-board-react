@@ -20,5 +20,5 @@ public interface ResponseMessage {
     String NO_PERMISSION = "don't have permission";
 
     // 500
-    String DATABASE_ERROR = "Database Error";
+    String DATABASE_ERROR = "Database Error";   
 }
