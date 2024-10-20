@@ -12,7 +12,7 @@
 401
 -로그인 실패 : "LF" / "Login failed"
 -인증 실패 : "AF" / "Authorization failed"
-
+   
 403
 -권한 없음 : "NP" / "don't have permission"
 
