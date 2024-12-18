@@ -8,7 +8,7 @@
 -중복된 닉네임 : "DN" / "Duplicated nickname"
 -존재하지 않는 유저 : "NU" / "User not found"
 -존재하지 않는 게시물 : "NB" / "Post not found"
-
+ 
 401
 -로그인 실패 : "LF" / "Login failed"
 -인증 실패 : "AF" / "Authorization failed"
