@@ -7,7 +7,7 @@
     "scrollTop": -908,
     "scrollLeft": -799,
     "zoomLevel": 1, 
-    "show": 431,
+    "show": 431,  
     "database": 4,
     "databaseName": "",
     "canvasType": "@dineug/erd-editor/builtin-schema-sql",
