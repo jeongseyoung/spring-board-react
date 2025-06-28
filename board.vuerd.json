@@ -14,7 +14,7 @@
     "language": 1,
     "tableNameCase": 4,
     "columnNameCase": 2,
-    "bracketType": 1,
+    "bracketType": 1,   
     "relationshipDataTypeSync": true,
     "relationshipOptimization": false,
     "columnOrder": [
