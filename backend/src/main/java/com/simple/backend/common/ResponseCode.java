@@ -4,7 +4,7 @@ package com.simple.backend.common;
 public interface ResponseCode {
     // 200
     String SUCCESS = "SU"; // = public static final String SUCCESS = "SU";
-
+     
     // 400
     String VALIDATION_FAILED = "VF";
     String DUPLICATED_EMAIL = "DE";
