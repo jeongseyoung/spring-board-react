@@ -8,7 +8,7 @@ import com.simple.backend.entity.CommentEntity;
 import com.simple.backend.repository.resultSet.GetCommentListResultSet;
 
 import jakarta.transaction.Transactional;
-
+    
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 
