@@ -11,7 +11,7 @@ import com.simple.backend.dto.res.search.GetRelationListResponseDto;
 import com.simple.backend.service.SearchService;
 
 import lombok.RequiredArgsConstructor;
-
+     
 @RestController
 @RequestMapping("/api/v1/search")
 @RequiredArgsConstructor
