@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class SearchController {
 
     private final SearchService searchService;
-
+      
     @GetMapping("/search-list")
     public ResponseEntity<? super GetPopularListResponseDto> getPopularList() {
         ResponseEntity<? super GetPopularListResponseDto> res = searchService.getPopularWordList();
