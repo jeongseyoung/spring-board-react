@@ -29,7 +29,7 @@ import com.simple.backend.dto.res.board.PostCommentResponseDto;
 import com.simple.backend.dto.res.board.PutFavoriteResponseDto;
 import com.simple.backend.dto.res.search.GetPopularListResponseDto;
 import com.simple.backend.service.BoardService;
-
+    
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
