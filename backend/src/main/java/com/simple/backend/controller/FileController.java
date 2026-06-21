@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/file")   
 @RequiredArgsConstructor
 public class FileController {
-
+      
     private final FileService fileService;
 
     @PostMapping("/upload")
