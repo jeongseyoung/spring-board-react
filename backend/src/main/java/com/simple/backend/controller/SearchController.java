@@ -25,6 +25,13 @@ public class SearchController {
         System.out.println("res : " + res);
         return res;
     }
+     // @GetMapping("/search-list")
+ //   public ResponseEntity<? super GetPopularListResponseDto> getPopularList() {
+   //     ResponseEntity<? super GetPopularListResponseDto> res = searchService.getPopularWordList();
+  //      System.out.println("res : " + res);
+     //   return res;
+   // }
+
 
     @GetMapping("/popularword-list")
     public ResponseEntity<? super GetPopularListResponseDto> getPopularWordList() {
