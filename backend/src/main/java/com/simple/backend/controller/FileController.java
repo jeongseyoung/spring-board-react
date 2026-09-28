@@ -25,6 +25,7 @@ public class FileController {
     public String upload(@RequestParam("file") MultipartFile file) {
         System.out.println("controller file: " + file.getName() + " " + file.getSize());
         String url = fileService.upload(file);
+          String url = fileService.upload(file);
         System.out.println("save url : " + url);
         return url;
     }
